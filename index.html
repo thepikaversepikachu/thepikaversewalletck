@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pika Verse WL Checker</title>
+    <style>
+        :root { --pika-gold: #ffee00; --pika-blue: #1da1f2; --success-green: #00ffcc; --fail-red: #ff4d4d; }
+        
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        /* Background GIF */
+        .bg-gif {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            background: url('https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyemcxNWJndDd5bTU5NTBrdjBsemlibjJ1dmZrdGViMDV5ajhkM2s3ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tM77LKMjQ3MaQAXUA8/giphy.gif') no-repeat center center;
+            background-size: cover;
+            z-index: -1;
+        }
+
+        .container { 
+            background: rgba(15, 15, 15, 0.85); 
+            width: 90%; 
+            max-width: 420px; 
+            padding: 40px 30px; 
+            border-radius: 28px; 
+            text-align: center; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            backdrop-filter: blur(15px);
+        }
+
+        h1 { background: linear-gradient(to right, var(--pika-blue), var(--pika-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 26px; font-weight: 800; margin-bottom: 25px; }
+
+        .input-group { margin-bottom: 20px; }
+        input { 
+            width: 100%; 
+            padding: 16px; 
+            background: rgba(0, 0, 0, 0.7); 
+            border: 1px solid #444; 
+            color: white; 
+            border-radius: 14px; 
+            box-sizing: border-box; 
+            font-size: 15px;
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--pika-blue); box-shadow: 0 0 10px rgba(29, 161, 242, 0.3); }
+
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background: white; 
+            color: black; 
+            border: none; 
+            border-radius: 14px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 17px; 
+            transition: 0.3s;
+        }
+        button:hover { background: #e0e0e0; transform: translateY(-2px); }
+
+        /* Result Styles */
+        #result { margin-top: 30px; display: none; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .eligible-text { font-size: 32px; font-weight: 900; color: var(--success-green); text-shadow: 0 0 15px rgba(0, 255, 204, 0.4); margin-bottom: 5px; }
+        .eligible-sub { font-size: 18px; color: #fff; font-weight: 600; letter-spacing: 1px; }
+
+        .not-eligible-text { font-size: 28px; font-weight: 900; color: var(--fail-red); margin-bottom: 10px; }
+        .not-eligible-sub { font-size: 14px; color: #ccc; line-height: 1.5; }
+        .not-eligible-sub a { color: var(--pika-blue); text-decoration: none; font-weight: bold; }
+
+        .loader { 
+            display: none; 
+            border: 4px solid #f3f3f3; 
+            border-top: 4px solid var(--pika-blue); 
+            border-radius: 50%; 
+            width: 30px; 
+            height: 30px; 
+            animation: spin 1s linear infinite; 
+            margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="bg-gif"></div>
+
+    <div class="container">
+        <h1>Check WL Status</h1>
+        
+        <div id="check-form">
+            <div class="input-group">
+                <input type="text" id="walletInput" placeholder="Enter EVM Wallet Address (0x...)">
+            </div>
+            <button onclick="checkWL()">Check Status</button>
+        </div>
+
+        <div class="loader" id="loader"></div>
+
+        <div id="result">
+            </div>
+    </div>
+
+    <script>
+        const scriptURL = 'YOUR_APPS_SCRIPT_WEB_APP_URL'; // এখানে আপনার নতুন Deployment URL টি দিন
+
+        async function checkWL() {
+            const wallet = document.getElementById('walletInput').value.trim();
+            const resultDiv = document.getElementById('result');
+            const loader = document.getElementById('loader');
+            const checkForm = document.getElementById('check-form');
+
+            if (!wallet) {
+                alert("Please enter a wallet address.");
+                return;
+            }
+
+            // UI Reset
+            resultDiv.style.display = 'none';
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch(`${scriptURL}?wallet=${wallet}`);
+                const isEligible = await response.text();
+
+                loader.style.display = 'none';
+                resultDiv.style.display = 'block';
+
+                if (isEligible === "true") {
+                    resultDiv.innerHTML = `
+                        <div class="eligible-text">You Are Eligible ✔️</div>
+                        <div class="eligible-sub">Pika Verse WL MINT</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="not-eligible-text">You Are Not Eligible 🚫</div>
+                        <div class="not-eligible-sub">
+                            Follow the <a href="https://x.com/thepikachuverse" target="_blank">X</a>, 
+                            there are still some WL spots available.
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                loader.style.display = 'none';
+                alert("Something went wrong. Please check your URL or connection.");
+            }
+        }
+    </script>
+</body>
+</html>
