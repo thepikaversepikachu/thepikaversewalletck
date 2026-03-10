@@ -3,159 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pika Verse WL Checker</title>
+    <title>Pika Verse | Spot Checker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&family=Bangers&display=swap" rel="stylesheet">
     <style>
-        :root { --pika-gold: #ffee00; --pika-blue: #1da1f2; --success-green: #00ffcc; --fail-red: #ff4d4d; }
+        :root { --pika-yellow: #FFCB05; --electric-gold: #FFD700; }
         
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; }
-
-        /* Background GIF */
-        .bg-gif {
-            position: fixed;
-            right: 0;
-            bottom: 0;
-            min-width: 100%;
-            min-height: 100%;
-            background: url('https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUycnZxM2gyd25wdHc1cHRvczVmMzQ0NmUxYzY2ODA0amZocmRkeDR3OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/12mwXD0A6E87L2/giphy.gif') no-repeat center center;
-            background-size: cover;
-            z-index: -1;
-        }
-
-        .container { 
-            background: rgba(15, 15, 15, 0.85); 
-            width: 90%; 
-            max-width: 420px; 
-            padding: 40px 30px; 
-            border-radius: 28px; 
-            text-align: center; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            box-shadow: 0 25px 60px rgba(0,0,0,0.9);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            backdrop-filter: blur(15px);
-        }
-
-        h1 { background: linear-gradient(to right, var(--pika-blue), var(--pika-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 26px; font-weight: 800; margin-bottom: 25px; }
-
-        .input-group { margin-bottom: 20px; }
-        input { 
-            width: 100%; 
-            padding: 16px; 
-            background: rgba(0, 0, 0, 0.7); 
-            border: 1px solid #444; 
-            color: white; 
-            border-radius: 14px; 
-            box-sizing: border-box; 
-            font-size: 15px;
-            text-align: center;
-            outline: none;
-            transition: 0.3s;
-        }
-        input:focus { border-color: var(--pika-blue); box-shadow: 0 0 10px rgba(29, 161, 242, 0.3); }
-
-        button { 
-            width: 100%; 
-            padding: 16px; 
-            background: white; 
+        body { 
+            background: #000; 
             color: black; 
-            border: none; 
-            border-radius: 14px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            font-size: 17px; 
-            transition: 0.3s;
+            font-family: 'Outfit', sans-serif; 
+            display: flex; align-items: center; justify-content: center; 
+            min-height: 100vh; margin: 0; overflow: hidden;
         }
-        button:hover { background: #e0e0e0; transform: translateY(-2px); }
 
-        /* Result Styles */
-        #result { margin-top: 30px; display: none; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .eligible-text { font-size: 32px; font-weight: 900; color: var(--success-green); text-shadow: 0 0 15px rgba(0, 255, 204, 0.4); margin-bottom: 5px; }
-        .eligible-sub { font-size: 18px; color: #fff; font-weight: 600; letter-spacing: 1px; }
-
-        .not-eligible-text { font-size: 28px; font-weight: 900; color: var(--fail-red); margin-bottom: 10px; }
-        .not-eligible-sub { font-size: 14px; color: #ccc; line-height: 1.5; }
-        .not-eligible-sub a { color: var(--pika-blue); text-decoration: none; font-weight: bold; }
-
-        .loader { 
-            display: none; 
-            border: 4px solid #f3f3f3; 
-            border-top: 4px solid var(--pika-blue); 
-            border-radius: 50%; 
-            width: 30px; 
-            height: 30px; 
-            animation: spin 1s linear infinite; 
-            margin: 20px auto;
+        /* ব্যাকগ্রাউন্ড লাইটিং কারেন্ট ইফেক্ট */
+        .lighting-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background: #FFCB05; 
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .electric-bolt {
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.4), transparent 70%);
+            filter: blur(60px);
+            animation: lightning-strike 4s linear infinite;
+        }
+
+        @keyframes lightning-strike {
+            0%, 10%, 20%, 50%, 100% { opacity: 0; transform: scale(1); }
+            5%, 15%, 25% { opacity: 1; transform: scale(1.2); background: white; }
+            55% { opacity: 0.5; background: var(--electric-gold); }
+        }
+
+        /* মেইন চেকার কার্ড */
+        .checker-card {
+            background: #000;
+            color: white;
+            border-radius: 40px;
+            padding: 40px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            max-width: 550px; width: 95%; text-align: center;
+            position: relative;
+            border: 1px solid rgba(255, 203, 5, 0.3);
+            z-index: 10;
+            margin-top: 50px;
+        }
+
+        /* পিকাচু ইমেজ */
+        .pika-img {
+            width: 120px;
+            position: absolute;
+            top: -90px;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: drop-shadow(0 0 15px rgba(255, 203, 5, 0.5));
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -10px); }
+        }
+
+        .header-text { font-family: 'Bangers', cursive; letter-spacing: 2px; color: var(--pika-yellow); }
+
+        /* ইনপুট বক্সের কারেন্ট বর্ডার */
+        .input-container {
+            position: relative;
+            margin: 25px 0;
+            padding: 3px;
+            background: #111;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .input-container::before {
+            content: "";
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(transparent, #FFCB05, transparent 30%);
+            animation: rotate-electric 3s linear infinite;
+        }
+
+        @keyframes rotate-electric { 100% { transform: rotate(360deg); } }
+
+        input {
+            position: relative;
+            background: #000;
+            border: none;
+            padding: 18px; 
+            border-radius: 18px;
+            color: white; width: 100%; outline: none; text-align: center;
+            font-size: 16px; z-index: 2;
+        }
+
+        .check-btn {
+            background: var(--pika-yellow); color: black; font-weight: 900;
+            padding: 12px 30px; border-radius: 50px; 
+            text-transform: uppercase; cursor: pointer; transition: 0.3s;
+            font-size: 14px; display: inline-block;
+        }
+        .check-btn:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--pika-yellow); }
+
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 20px; display: none; }
+        .gtd { border: 2px solid #00E5FF; color: #00E5FF; background: rgba(0, 229, 255, 0.1); }
+        .wl { border: 2px solid var(--pika-yellow); color: var(--pika-yellow); background: rgba(255, 203, 5, 0.1); }
+        .none { border: 1px dashed #ff4d4d; color: #ff4d4d; background: rgba(255, 0, 0, 0.1); }
+
+        .action-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 18px; border-radius: 12px;
+            font-size: 11px; font-weight: 900; transition: 0.2s;
+        }
+        .action-btn:hover { background: white; color: black; }
     </style>
 </head>
 <body>
 
-    <div class="bg-gif"></div>
+    <div class="lighting-bg">
+        <div class="electric-bolt"></div>
+    </div>
 
-    <div class="container">
-        <h1>Check WL Status</h1>
+    <div class="checker-card">
+        <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png" class="pika-img" alt="Pika">
         
-        <div id="check-form">
-            <div class="input-group">
-                <input type="text" id="walletInput" placeholder="Enter EVM Wallet Address (0x...)">
-            </div>
-            <button onclick="checkWL()">Check Status</button>
+        <h1 class="header-text text-5xl mb-2">CHECK YOUR SPOT</h1>
+        <p class="text-[10px] text-gray-500 tracking-[0.4em] mb-4 uppercase italic">Official Pika Verse Portal</p>
+
+        <div class="input-container">
+            <input type="text" id="walletInput" placeholder="Enter Wallet Address (0x...)">
+        </div>
+        
+        <button onclick="checkStatus()" id="mainBtn" class="check-btn">⚡ Verify Status</button>
+
+        <div id="result" class="result-box">
+            <h2 id="resTitle" class="font-black text-xl mb-1"></h2>
+            <p id="resDesc" class="text-sm italic"></p>
         </div>
 
-        <div class="loader" id="loader"></div>
+        <div class="grid grid-cols-3 gap-2 mt-8 py-4 border-y border-white/10 text-[10px] font-black text-yellow-500 uppercase">
+            <div>Supply: 999</div>
+            <div>Date: 18.03.2026</div>
+            <div>Base Chain</div>
+        </div>
 
-        <div id="result">
-            </div>
+        <div class="flex gap-3 mt-6 justify-center">
+            <a href="https://opensea.io/collection/the-pika-vers/overview" target="_blank" class="action-btn">MINT PAGE</a>
+            <a href="https://x.com/thepikachuverse" target="_blank" class="action-btn">FOLLOW X</a>
+        </div>
     </div>
 
     <script>
-        const scriptURL = 'YOUR_APPS_SCRIPT_WEB_APP_URL'; // এখানে আপনার নতুন Deployment URL টি দিন
+        // আপনার Google Script URL এখানে বসাবেন
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8FQ5KUZuQdzp8euGZEupROGEzLDMFKE-foDTVMOPnQyMbHemTnWiH26L5FFiRbluR/exec';
 
-        async function checkWL() {
-            const wallet = document.getElementById('walletInput').value.trim();
-            const resultDiv = document.getElementById('result');
-            const loader = document.getElementById('loader');
-            const checkForm = document.getElementById('check-form');
+        async function checkStatus() {
+            const wallet = document.getElementById('walletInput').value.trim().toLowerCase();
+            const res = document.getElementById('result');
+            const btn = document.getElementById('mainBtn');
 
-            if (!wallet) {
-                alert("Please enter a wallet address.");
-                return;
-            }
+            if (wallet.length < 42) { alert("Invalid wallet address!"); return; }
 
-            // UI Reset
-            resultDiv.style.display = 'none';
-            loader.style.display = 'block';
+            btn.innerText = "VERIFYING...";
+            res.style.display = "none";
 
             try {
-                const response = await fetch(`${scriptURL}?wallet=${wallet}`);
-                const isEligible = await response.text();
+                const response = await fetch(`${SCRIPT_URL}?wallet=${wallet}`);
+                const data = await response.json();
+                res.style.display = "block";
 
-                loader.style.display = 'none';
-                resultDiv.style.display = 'block';
-
-                if (isEligible === "true") {
-                    resultDiv.innerHTML = `
-                        <div class="eligible-text">You Are Eligible ✔️</div>
-                        <div class="eligible-sub">Pika Verse WL MINT</div>
-                    `;
+                if (data.type === "GTD") {
+                    res.className = "result-box gtd";
+                    document.getElementById('resTitle').innerText = "GTD ACCESS CONFIRMED!";
+                    document.getElementById('resDesc').innerText = "Congratulations! Your spot is guaranteed.";
+                } else if (data.type === "WL") {
+                    res.className = "result-box wl";
+                    document.getElementById('resTitle').innerText = "WL FCFS ELIGIBLE!";
+                    document.getElementById('resDesc').innerText = "You are on the FCFS list. Be fast!";
                 } else {
-                    resultDiv.innerHTML = `
-                        <div class="not-eligible-text">You Are Not Eligible 🚫</div>
-                        <div class="not-eligible-sub">
-                            Follow the <a href="https://x.com/thepikachuverse" target="_blank">X</a>, 
-                            there are still some WL spots available.
-                        </div>
-                    `;
+                    res.className = "result-box none";
+                    document.getElementById('resTitle').innerText = "NOT ELIGIBLE";
+                    document.getElementById('resDesc').innerText = "Follow X for more opportunities!";
                 }
-            } catch (error) {
-                loader.style.display = 'none';
-                alert("Something went wrong. Please check your URL or connection.");
+            } catch (e) {
+                alert("Error! Please check if your Google Script URL is correct.");
             }
+            btn.innerText = "⚡ Verify Status";
         }
     </script>
 </body>
