@@ -107,10 +107,25 @@
         }
         .check-btn:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--pika-yellow); }
 
-        .result-box { margin-top: 25px; padding: 20px; border-radius: 20px; display: none; }
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 20px; display: none; text-align: left; }
         .gtd { border: 2px solid #00E5FF; color: #00E5FF; background: rgba(0, 229, 255, 0.1); }
         .wl { border: 2px solid var(--pika-yellow); color: var(--pika-yellow); background: rgba(255, 203, 5, 0.1); }
         .none { border: 1px dashed #ff4d4d; color: #ff4d4d; background: rgba(255, 0, 0, 0.1); }
+
+        /* হোল্ডার বেনিফিট সেকশন */
+        .benefit-tag {
+            display: block; margin-top: 15px; padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 11px; color: #ccc; line-height: 1.4;
+        }
+        .benefit-tag b { color: var(--pika-yellow); }
+
+        /* X পোস্ট বাটন */
+        .x-post-btn {
+            display: inline-block; margin-top: 12px; padding: 8px 15px;
+            background: #fff; color: #000; border-radius: 10px;
+            font-size: 10px; font-weight: 900; text-transform: uppercase;
+        }
 
         .action-btn {
             background: rgba(255,255,255,0.1);
@@ -128,7 +143,7 @@
     </div>
 
     <div class="checker-card">
-        <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png" class="pika-img" alt="Pika">
+        <img src="https://i.ibb.co.com/35JPhykk/Adobe-Express-file-12-1.png" class="pika-img" alt="Pika">
         
         <h1 class="header-text text-5xl mb-2">CHECK YOUR SPOT</h1>
         <p class="text-[10px] text-gray-500 tracking-[0.4em] mb-4 uppercase italic">Official Pika Verse Portal</p>
@@ -142,6 +157,14 @@
         <div id="result" class="result-box">
             <h2 id="resTitle" class="font-black text-xl mb-1"></h2>
             <p id="resDesc" class="text-sm italic"></p>
+            
+            <a id="xPostLink" href="#" target="_blank" class="x-post-btn" style="display: none;">🚀 UPGRADE MY SPOT</a>
+
+            <div class="benefit-tag">
+                ⚡ <b>Holder Utility:</b> Your NFT is a playable character in our upcoming game. 
+                Holding increases your <b>Mining Frequency</b> to earn <b>$PIKA</b> tokens daily. 
+                Don't list your NFT; hold to evolve!
+            </div>
         </div>
 
         <div class="grid grid-cols-3 gap-2 mt-8 py-4 border-y border-white/10 text-[10px] font-black text-yellow-500 uppercase">
@@ -164,11 +187,13 @@
             const wallet = document.getElementById('walletInput').value.trim().toLowerCase();
             const res = document.getElementById('result');
             const btn = document.getElementById('mainBtn');
+            const xLink = document.getElementById('xPostLink');
 
             if (wallet.length < 42) { alert("Invalid wallet address!"); return; }
 
             btn.innerText = "VERIFYING...";
             res.style.display = "none";
+            xLink.style.display = "none";
 
             try {
                 const response = await fetch(`${SCRIPT_URL}?wallet=${wallet}`);
@@ -179,14 +204,25 @@
                     res.className = "result-box gtd";
                     document.getElementById('resTitle').innerText = "GTD ACCESS CONFIRMED!";
                     document.getElementById('resDesc').innerText = "Congratulations! Your spot is guaranteed.";
+                    xLink.style.display = "none";
                 } else if (data.type === "WL") {
                     res.className = "result-box wl";
                     document.getElementById('resTitle').innerText = "WL FCFS ELIGIBLE!";
-                    document.getElementById('resDesc').innerText = "You are on the FCFS list. Be fast!";
+                    document.getElementById('resDesc').innerText = "You are on the FCFS list. Want GTD?";
+                    
+                    // WL থেকে GTD তে আপগ্রেড করার লিঙ্ক
+                    xLink.href = "https://twitter.com/intent/tweet?text=I%20just%20secured%20my%20WL%20spot%20in%20The%20Pika%20Verse!%20@thepikachuverse%20is%20taking%20over%20Base.%20⚡";
+                    xLink.innerText = "🚀 Upgrade to GTD";
+                    xLink.style.display = "inline-block";
                 } else {
                     res.className = "result-box none";
                     document.getElementById('resTitle').innerText = "NOT ELIGIBLE";
-                    document.getElementById('resDesc').innerText = "Follow X for more opportunities!";
+                    document.getElementById('resDesc').innerText = "Post about us to get a WL spot!";
+                    
+                    // Not Eligible থেকে WL পাওয়ার লিঙ্ক
+                    xLink.href = "https://twitter.com/intent/tweet?text=Checking%20my%20eligibility%20for%20@thepikachuverse.%20Can't%20wait%20to%20join%20the%20movement!%20⚡";
+                    xLink.innerText = "⚡ Apply for WL Spot";
+                    xLink.style.display = "inline-block";
                 }
             } catch (e) {
                 alert("Error! Please check if your Google Script URL is correct.");
