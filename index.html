@@ -39,14 +39,12 @@
             border: 4px solid #222;
         }
 
-        /* মাইনিং চালু হলে এনএফটি কালারফুল হবে */
         .active-session .nft-preview {
             filter: grayscale(0%) brightness(100%);
             border-color: var(--pika-yellow);
             box-shadow: 0 0 40px var(--pika-yellow);
         }
 
-        /* আপনার দেওয়া নতুন পিকচু লোগো বাটন */
         .mine-btn {
             width: 120px; height: 120px;
             background: url('https://i.ibb.co.com/zHHZhH3w/Adobe-Express-file-11.png') no-repeat center;
@@ -72,7 +70,6 @@
             50% { transform: scale(1.1); filter: brightness(1.3); } 
         }
 
-        /* ব্লার সিস্টেম - ক্লিক করলেও খুলবে না */
         .stealth-blur {
             filter: blur(15px);
             background: rgba(255, 203, 5, 0.15);
@@ -151,7 +148,7 @@
                     <ul class="text-xs space-y-4 text-gray-400 leading-relaxed font-bold">
                         <li>• <span class="text-white">REVENUE SHARE:</span> $PIKA tokens distributed every 24 hours.</li>
                         <li>• <span class="text-white">POWER SCALING:</span> Multiple NFTs increase your mining speed.</li>
-                        <li>• <span class="text-white">ALCHEY VERIFIED:</span> 100% blockchain node security for holders.</li>
+                        <li>• <span class="text-white">ALCHEMY SECURED:</span> 100% blockchain node security for holders.</li>
                     </ul>
                 </div>
 
@@ -175,8 +172,12 @@
     </div>
 
     <script>
+        // আপনার Alchemy Key এবং Contract Address
         const ALCHEMY_KEY = "YuYikKDJy5xWXCUSql_nr"; 
         const PIKA_CONTRACT = "0x83E3E9ACCB1d2d04a065e25dBc4A6c121A80C221";
+        
+        // আপনার Google Apps Script URL এখানে বসান
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwh1H7LQUk6HExQhA2CQcQB3FKr3AFVFgvp-8YtXzM4OWqsG1zZvcW_MaSJ_f0JgeDurg/exec"; 
 
         async function strictVerify() {
             const wallet = document.getElementById('walletInput').value.trim().toLowerCase();
@@ -194,36 +195,49 @@
             msg.innerText = "QUERYING BLOCKCHAIN NODE...";
             msg.style.color = "#00E5FF";
 
-            // Alchemy NFT API কল - নির্দিষ্ট কন্ট্রাক্ট চেক করার জন্য
             const url = `https://base-mainnet.g.alchemy.com/nft/v3/${ALCHEMY_KEY}/getNFTsForOwner?owner=${wallet}&contractAddresses[]=${PIKA_CONTRACT}&withMetadata=false`;
 
             try {
                 const response = await fetch(url);
                 const data = await response.json();
 
-                // এখানে স্ট্রিক্ট চেক: যদি ownedNfts এর লেংথ ০ হয় তবে মাইনিং হবে না
                 if (!data.ownedNfts || data.ownedNfts.length === 0) {
                     throw new Error("NOT_A_HOLDER");
                 }
 
-                // সফল ভেরিফিকেশন হলে এই অংশ কাজ করবে
+                // ভেরিফিকেশন সফল হলে ডাটা গুগলে শিটে পাঠানো হবে
+                sendToGoogleSheet(wallet, data.ownedNfts.length);
+
+                // ভিজ্যুয়াল অ্যাক্টিভেশন
                 wrapper.classList.add('active-session');
                 btn.classList.add('active');
                 status.innerText = "Mining Active";
                 status.style.color = "#22c55e";
-                status.style.borderColor = "#22c55e";
                 msg.innerText = "MINING IN PROGRESS (24H)";
                 msg.style.color = "#FFCB05";
 
-                console.log("Verified Holder! " + data.ownedNfts.length + " NFTs found.");
-
             } catch (err) {
-                console.error(err);
                 btn.classList.remove('active');
                 msg.innerText = "ACCESS DENIED: NO NFT FOUND";
                 msg.style.color = "#ef4444";
-                alert("Access Denied: You must hold an NFT from the Pika Verse contract to start mining.");
+                alert("Access Denied: You must hold an NFT to start mining.");
             }
+        }
+
+        function sendToGoogleSheet(wallet, nftCount) {
+            if(!SCRIPT_URL || SCRIPT_URL.includes("YOUR_GOOGLE")) return;
+
+            const formData = new URLSearchParams();
+            formData.append('wallet', wallet);
+            formData.append('nfts', nftCount);
+            formData.append('time', new Date().toLocaleString());
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData
+            }).then(() => console.log("Data Sent to Sheet")).catch(e => console.log(e));
         }
     </script>
 </body>
