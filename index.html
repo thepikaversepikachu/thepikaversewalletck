@@ -88,6 +88,19 @@
         .round-icon img { width: 20px; }
         .round-icon:hover { background: var(--pika-yellow); transform: translateY(-3px); }
 
+        .tokenomics-grid {
+            display: grid;
+            grid-template-cols: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .token-stat {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 15px;
+            text-align: center;
+        }
     </style>
 </head>
 <body class="p-4 md:p-10">
@@ -107,7 +120,7 @@
             </div>
 
             <div class="bg-yellow-500/10 border border-yellow-400/30 px-6 py-2 rounded-full inline-block">
-                <p class="text-yellow-400 font-bold text-xs uppercase italic">⚡ Mining Portal Access Opens March 20</p>
+                <p class="text-yellow-400 font-bold text-xs uppercase italic">⚡ Launching March 20 @ 14:00 UTC via @bankrbot</p>
             </div>
         </div>
 
@@ -134,33 +147,42 @@
             <div class="space-y-6">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
-                        <p class="text-[10px] text-gray-500 font-black uppercase mb-1">Daily Reward</p>
-                        <h2 class="text-2xl font-black text-yellow-400">$<span class="stealth-blur">0.70</span></h2>
+                        <p class="text-[10px] text-gray-500 font-black uppercase mb-1">Daily Reward (Per NFT)</p>
+                        <h2 class="text-2xl font-black text-yellow-400">1,500 <span class="text-xs">$PIKA</span></h2>
+                        <p class="text-[9px] text-gray-500 mt-1">Value: <span class="stealth-blur">$0.70</span></p>
                     </div>
                     <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
                         <p class="text-[10px] text-gray-500 font-black uppercase mb-1">Target Value</p>
                         <h2 class="text-2xl font-black text-white">$<span class="stealth-blur">1.00</span></h2>
+                        <p class="text-[9px] text-gray-500 mt-1">Market Projection</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/5">
+                    <p class="text-[10px] text-gray-500 font-black uppercase mb-3">Tokenomics (Supply: 10,000,000)</p>
+                    <div class="tokenomics-grid">
+                        <div class="token-stat">
+                            <p class="text-yellow-400 font-black text-sm">60%</p>
+                            <p class="text-[8px] text-gray-500 uppercase">Mining</p>
+                        </div>
+                        <div class="token-stat">
+                            <p class="text-white font-black text-sm">30%</p>
+                            <p class="text-[8px] text-gray-500 uppercase">Liquidity</p>
+                        </div>
+                        <div class="token-stat">
+                            <p class="text-white font-black text-sm">10%</p>
+                            <p class="text-[8px] text-gray-500 uppercase">Team</p>
+                        </div>
                     </div>
                 </div>
 
                 <div class="bg-yellow-500/5 p-8 rounded-3xl border border-yellow-400/10">
                     <h3 class="bangers text-3xl text-yellow-500 mb-4 uppercase">Holder Utility</h3>
                     <ul class="text-xs space-y-4 text-gray-400 leading-relaxed font-bold">
-                        <li>• <span class="text-white">REVENUE SHARE:</span> $PIKA tokens distributed every 24 hours.</li>
-                        <li>• <span class="text-white">POWER SCALING:</span> Multiple NFTs increase your mining speed.</li>
-                        <li>• <span class="text-white">ALCHEMY SECURED:</span> 100% blockchain node security for holders.</li>
+                        <li>• <span class="text-white">POWER SCALING:</span> More NFTs in your wallet = Higher Mining Multiplier.</li>
+                        <li>• <span class="text-white">REVENUE SHARE:</span> $PIKA tokens distributed every 24 hours to active miners.</li>
+                        <li>• <span class="text-white">ALCHEMY SECURED:</span> Automated blockchain node verification for all holders.</li>
                     </ul>
-                </div>
-
-                <div class="bg-black/40 p-6 rounded-3xl border border-white/5 relative overflow-hidden">
-                    <h3 class="text-xs font-black mb-4 uppercase text-gray-600">Top Holder Leaderboard</h3>
-                    <div class="space-y-3 opacity-10">
-                        <div class="flex justify-between text-[10px]"><span>0x71...22b1</span><span>1,250,000 $PIKA</span></div>
-                        <div class="flex justify-between text-[10px]"><span>0x45...88a4</span><span>980,000 $PIKA</span></div>
-                    </div>
-                    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
-                        <p class="text-[10px] font-black tracking-[0.3em] text-yellow-500 uppercase">Live After Launch</p>
-                    </div>
                 </div>
 
                 <a href="https://opensea.io/collection/the-pika-vers/overview" target="_blank" 
@@ -172,25 +194,18 @@
     </div>
 
     <script>
-        // আপনার Alchemy Key এবং Contract Address
         const ALCHEMY_KEY = "YuYikKDJy5xWXCUSql_nr"; 
         const PIKA_CONTRACT = "0x83E3E9ACCB1d2d04a065e25dBc4A6c121A80C221";
-        
-        // আপনার Google Apps Script URL এখানে বসান
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwh1H7LQUk6HExQhA2CQcQB3FKr3AFVFgvp-8YtXzM4OWqsG1zZvcW_MaSJ_f0JgeDurg/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwh1H7LQUk6HExQhA2CQcQB3FKr3AFVFgvp-8YtXzM4OWqsG1zZvcW_MaSJ_f0JgeDurg/exec";
 
         async function strictVerify() {
             const wallet = document.getElementById('walletInput').value.trim().toLowerCase();
             const msg = document.getElementById('mineMsg');
             const btn = document.getElementById('pikaBtn');
-            const nft = document.getElementById('nftImage');
             const status = document.getElementById('statusTag');
             const wrapper = document.getElementById('mainWrapper');
 
-            if (wallet.length < 42) {
-                alert("Error: Please provide a valid Base Wallet Address!");
-                return;
-            }
+            if (wallet.length < 42) { alert("Error: Invalid Wallet!"); return; }
 
             msg.innerText = "QUERYING BLOCKCHAIN NODE...";
             msg.style.color = "#00E5FF";
@@ -201,14 +216,10 @@
                 const response = await fetch(url);
                 const data = await response.json();
 
-                if (!data.ownedNfts || data.ownedNfts.length === 0) {
-                    throw new Error("NOT_A_HOLDER");
-                }
+                if (!data.ownedNfts || data.ownedNfts.length === 0) { throw new Error("NOT_A_HOLDER"); }
 
-                // ভেরিফিকেশন সফল হলে ডাটা গুগলে শিটে পাঠানো হবে
                 sendToGoogleSheet(wallet, data.ownedNfts.length);
 
-                // ভিজ্যুয়াল অ্যাক্টিভেশন
                 wrapper.classList.add('active-session');
                 btn.classList.add('active');
                 status.innerText = "Mining Active";
@@ -226,7 +237,6 @@
 
         function sendToGoogleSheet(wallet, nftCount) {
             if(!SCRIPT_URL || SCRIPT_URL.includes("YOUR_GOOGLE")) return;
-
             const formData = new URLSearchParams();
             formData.append('wallet', wallet);
             formData.append('nfts', nftCount);
@@ -237,7 +247,7 @@
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formData
-            }).then(() => console.log("Data Sent to Sheet")).catch(e => console.log(e));
+            });
         }
     </script>
 </body>
